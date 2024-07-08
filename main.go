@@ -16,11 +16,11 @@ const (
 
 // Training общая структура для всех тренировок
 type Training struct {
-	TrainingType string        // тип тренировки
-	Action       int           // количество повторов(шаги, гребки при плавании)
-	LenStep      float64       // длина одного шага или гребка в м
-	Duration     time.Duration // продолжительность тренировки
-	Weight       float64       // вес пользователя в кг
+	TrainingType string
+	Action       int
+	LenStep      float64
+	Duration     time.Duration
+	Weight       float64
 }
 
 // distance возвращает дистанцию, которую преодолел пользователь.
