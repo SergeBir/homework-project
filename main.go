@@ -115,7 +115,7 @@ func (r Running) TrainingInfo() InfoMessage {
 	return InfoMessage{
 		TrainingType: r.TrainingType,
 		Duration:     r.Duration,
-		Distance:     r.distance(),
+		Distance:     float64(r.Action) * r.LenStep / MInKm,
 		Speed:        r.meanSpeed(),
 		Calories:     r.Calories(),
 	}
@@ -142,12 +142,16 @@ type Walking struct {
 // * 0.029 * вес_спортсмена_в_кг) * время_тренировки_в_часах * мин_в_ч)
 // Это переопределенный метод Calories() из Training.
 func (w Walking) Calories() float64 {
-	speedMS := w.meanSpeed() * KmHInMsec // Переводим скорость из км/ч в м/с
-	timeInHours := w.Duration.Hours()    // Время тренировки в часах
+	speedMS := w.meanSpeed() * KmHInMsec // Перевод скорости из км/ч в м/с
+	timeInHours := w.Duration.Hours()    // Продолжительность тренировки в часах
+	heightInMeters := w.Height / CmInM   // Перевод роста из см в метры
 
-	calories := (CaloriesWeightMultiplier*w.Weight + (math.Pow(speedMS, 2)/w.Height)*CaloriesSpeedHeightMultiplier*w.Weight) * timeInHours * MinInHours
+	// Расчет калорий
+	calories := (CaloriesWeightMultiplier*w.Weight +
+		(math.Pow(speedMS, 2)/heightInMeters)*CaloriesSpeedHeightMultiplier*w.Weight) *
+		timeInHours * MinInHours
+
 	return calories
-
 }
 
 // TrainingInfo возвращает структуру InfoMessage с информацией о проведенной тренировке.
@@ -157,7 +161,7 @@ func (w Walking) TrainingInfo() InfoMessage {
 	return InfoMessage{
 		TrainingType: w.TrainingType,
 		Duration:     w.Duration,
-		Distance:     w.distance(),
+		Distance:     float64(w.Action) * w.LenStep / MInKm,
 		Speed:        w.meanSpeed(),
 		Calories:     w.Calories(),
 	}
